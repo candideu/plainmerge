@@ -4,7 +4,7 @@ export const getRowsLimit = () => {
   if (process.env.PAID) {
     return 100_000;
   }
-  return 10;
+  return 100_000;
 };
 
 export const readExcelMeta = async (fp: string) => {
