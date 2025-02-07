@@ -436,9 +436,7 @@ const PdfEditor = () => {
           </section>
 
           <section className="flex items-center justify-between space-x-2">
-            {!process.env.PAID ? (
-              <p className="text-red-500">Trial limit: 10 records</p>
-            ) : null}
+
 
             <button
               type="button"
