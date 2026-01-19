@@ -28,18 +28,21 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-yarn-
     
+    - name: Fix istextorbinary dependency
+      run: |
+        yarn add istextorbinary@6.0.0 --dev
+    
     - name: Install dependencies
-      run: yarn install --frozen-lockfile
+      run: yarn install --frozen-lockfile --ignore-scripts
       
+    - name: Run postinstall manually
+      run: yarn postinstall
+    
     - name: Build application
       run: yarn build
-      env:
-        NODE_OPTIONS: --openssl-legacy-provider
     
     - name: Package for Windows
       run: npx electron-builder build --publish never --win --x64
-      env:
-        NODE_OPTIONS: --openssl-legacy-provider
     
     - name: Upload Windows executable
       uses: actions/upload-artifact@v4
