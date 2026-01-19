@@ -1,0 +1,45 @@
+name: Build Windows EXE
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2019
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Node.js 16
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16.20.2'
+    
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "dir=$(yarn cache dir)" >> $env:GITHUB_OUTPUT
+    
+    - name: Cache yarn dependencies
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+    
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+    
+    - name: Build application
+      run: yarn build
+    
+    - name: Package for Windows
+      run: npx electron-builder build --publish never --win --x64
+    
+    - name: Upload Windows executable
+      uses: actions/upload-artifact@v3
+      with:
+        name: PlainMerge-Windows-Installer
+        path: release/*.exe
+        if-no-files-found: error
