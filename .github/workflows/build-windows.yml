@@ -11,10 +11,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Setup Node.js 16
+    - name: Setup Node.js 14
       uses: actions/setup-node@v4
       with:
-        node-version: '16.20.2'
+        node-version: '14.21.3'
     
     - name: Get yarn cache directory path
       id: yarn-cache-dir-path
@@ -30,12 +30,16 @@ jobs:
     
     - name: Install dependencies
       run: yarn install --frozen-lockfile
-    
+      
     - name: Build application
       run: yarn build
+      env:
+        NODE_OPTIONS: --openssl-legacy-provider
     
     - name: Package for Windows
       run: npx electron-builder build --publish never --win --x64
+      env:
+        NODE_OPTIONS: --openssl-legacy-provider
     
     - name: Upload Windows executable
       uses: actions/upload-artifact@v4
